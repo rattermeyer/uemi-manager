@@ -1,0 +1,7 @@
+{
+  "packageManager": "yarn@4.3.1",
+  "devDependencies": {
+    "@biomejs/biome": "1.9.1",
+    "@types/node": "^22.5.5"
+  }
+}
