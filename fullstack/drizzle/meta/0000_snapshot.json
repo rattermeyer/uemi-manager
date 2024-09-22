@@ -1,96 +1,339 @@
 {
-  "id": "cc174aaa-150c-4211-ae6e-63ff0b86f001",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.benutzer": {
-      "name": "benutzer",
-      "schema": "",
+    "betreuung.databasechangelog": {
+      "name": "databasechangelog",
+      "schema": "betreuung",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "author": {
+          "name": "author",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "filename": {
+          "name": "filename",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dateexecuted": {
+          "name": "dateexecuted",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "orderexecuted": {
+          "name": "orderexecuted",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "exectype": {
+          "name": "exectype",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "md5sum": {
+          "name": "md5sum",
+          "type": "varchar(35)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "comments": {
+          "name": "comments",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tag": {
+          "name": "tag",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "liquibase": {
+          "name": "liquibase",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "contexts": {
+          "name": "contexts",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "labels": {
+          "name": "labels",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deployment_id": {
+          "name": "deployment_id",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "betreuung.databasechangeloglock": {
+      "name": "databasechangeloglock",
+      "schema": "betreuung",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "locked": {
+          "name": "locked",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lockgranted": {
+          "name": "lockgranted",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lockedby": {
+          "name": "lockedby",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "betreuung.session": {
+      "name": "session",
+      "schema": "betreuung",
       "columns": {
         "id": {
           "name": "id",
           "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "uuid_generate_v7()"
+        },
+        "data": {
+          "name": "data",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires": {
+          "name": "expires",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "(now() + '1 day'::interval)"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "betreuung.benutzer": {
+      "name": "benutzer",
+      "schema": "betreuung",
+      "columns": {
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
           "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v7()"
+        },
+        "benutzername": {
+          "name": "benutzername",
+          "type": "varchar(40)",
+          "primaryKey": false,
           "notNull": true
         },
         "email": {
           "name": "email",
-          "type": "varchar(255)",
+          "type": "varchar(254)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(40)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "vorname": {
+          "name": "vorname",
+          "type": "varchar(40)",
           "primaryKey": false,
           "notNull": true
         },
         "passwort": {
           "name": "passwort",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "username": {
-          "name": "username",
-          "type": "varchar(255)",
+          "type": "varchar(60)",
           "primaryKey": false,
           "notNull": true
         }
       },
-      "indexes": {
-        "idx_benutzer_email": {
-          "name": "idx_benutzer_email",
-          "columns": [
-            {
-              "expression": "email",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "idx_benutzer_username": {
-          "name": "idx_benutzer_username",
-          "columns": [
-            {
-              "expression": "username",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "benutzer_email_unique": {
-          "name": "benutzer_email_unique",
+        "uq_benutzer_benutzername": {
+          "columns": [
+            "benutzername"
+          ],
           "nullsNotDistinct": false,
+          "name": "uq_benutzer_benutzername"
+        },
+        "uq_benutzer_email": {
           "columns": [
             "email"
-          ]
-        },
-        "benutzer_username_unique": {
-          "name": "benutzer_username_unique",
+          ],
           "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
+          "name": "uq_benutzer_email"
         }
       }
+    },
+    "betreuung.rolle": {
+      "name": "rolle",
+      "schema": "betreuung",
+      "columns": {
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v7()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(40)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "uq_rolle_name": {
+          "columns": [
+            "name"
+          ],
+          "nullsNotDistinct": false,
+          "name": "uq_rolle_name"
+        }
+      }
+    },
+    "betreuung.benutzer_rolle": {
+      "name": "benutzer_rolle",
+      "schema": "betreuung",
+      "columns": {
+        "benutzer_uuid": {
+          "name": "benutzer_uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rolle_uuid": {
+          "name": "rolle_uuid",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "fk_benutzer_rolle_benutzer": {
+          "name": "fk_benutzer_rolle_benutzer",
+          "tableFrom": "benutzer_rolle",
+          "tableTo": "benutzer",
+          "schemaTo": "betreuung",
+          "columnsFrom": [
+            "benutzer_uuid"
+          ],
+          "columnsTo": [
+            "uuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "fk_benutzer_rolle_rolle": {
+          "name": "fk_benutzer_rolle_rolle",
+          "tableFrom": "benutzer_rolle",
+          "tableTo": "rolle",
+          "schemaTo": "betreuung",
+          "columnsFrom": [
+            "rolle_uuid"
+          ],
+          "columnsTo": [
+            "uuid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "pk_benutzer_rolle": {
+          "name": "pk_benutzer_rolle",
+          "columns": [
+            "benutzer_uuid",
+            "rolle_uuid"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
     }
   },
   "enums": {},
-  "schemas": {},
+  "schemas": {
+    "betreuung": "betreuung"
+  },
   "sequences": {},
   "_meta": {
-    "columns": {},
     "schemas": {},
-    "tables": {}
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {
+      "session": {
+        "columns": {
+          "expires": {
+            "isDefaultAnExpression": true
+          }
+        }
+      }
+    }
   }
 }

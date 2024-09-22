@@ -1,9 +1,10 @@
-import type {LoaderFunction} from '@remix-run/node';
-import {requireUserSession} from '~/services/auth.server';
+import {json, type LoaderFunction} from '@remix-run/node';
+import {authenticator, requireUserSession} from '~/services/auth.server';
 
 export const loader: LoaderFunction = async ({ request }) => {
-    await requireUserSession(request);
-    return null;
+    const session = await requireUserSession(request);
+    const user = await authenticator.isAuthenticated(session);
+    return json({ user });
 }
 
 export default function Index() {

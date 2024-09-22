@@ -20,6 +20,7 @@ EOSQL
       ALTER USER ${database}_admin SET search_path TO ${database},extensions;
       GRANT USAGE ON SCHEMA ${database} TO ${database}_user;
       GRANT ALL ON SCHEMA ${database} TO ${database}_admin;
+      GRANT USAGE ON SCHEMA extensions TO ${database}_admin;
       ALTER USER ${database}_user SET search_path TO ${database},extensions;
 
       GRANT select,insert,update,delete ON ALL TABLES IN SCHEMA ${database} TO ${database}_user;
@@ -32,8 +33,8 @@ EOSQL
 
       ALTER DEFAULT PRIVILEGES FOR USER ${database}_admin IN SCHEMA extensions GRANT execute ON FUNCTIONS TO ${database}_admin;
 
-
 EOSQL
+  psql -v ON_ERROR_STOP=1 --username postgres -d "$database" < /docker-entrypoint-initdb.d/0010-extensions.sql.inc
 }
 
 if [ -n "$POSTGRESQL_MULTIPLE_DATABASES" ]; then

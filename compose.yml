@@ -2,7 +2,8 @@ volumes:
   postgres-data:
 services:
   postgres:
-    image: postgres:16.2
+    build:
+      context: ./docker-compose/postgres
     shm_size: "128mb"
     environment:
       - POSTGRES_PASSWORD=changeme

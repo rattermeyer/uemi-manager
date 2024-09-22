@@ -1,5 +1,5 @@
-import type { KeycloakProfile } from 'remix-keycloak'
-import type { RolesProfile } from '~/services/auth.server'
+import {z} from 'zod';
+import {zodResolver} from '@hookform/resolvers/zod';
 
 export type UserProfile = {
   id: string
@@ -8,9 +8,11 @@ export type UserProfile = {
   roles: string[]
 }
 
-export type KeycloakAuthProps = {
-  profile: KeycloakProfile & RolesProfile
-  accessToken: string
-  refreshToken?: string
-  roles: string[]
-}
+export const user = z.object({
+  email: z.string().email(),
+  password: z.string().min(2),
+});
+
+export type User = z.infer<typeof user>;
+
+export const userResolver = zodResolver(user);

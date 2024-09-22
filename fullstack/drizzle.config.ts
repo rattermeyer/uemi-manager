@@ -8,5 +8,8 @@ export default defineConfig({
         ssl: false,
         url: process.env.DATABASE_URL || "postgresql://betreuung_admin:betreuung_admin@localhost:5432/betreuung?currentSchema=betreuung"
 	},
+	verbose: true,
+	strict: true,
+	schemaFilter: ["betreuung"]
     
 });
