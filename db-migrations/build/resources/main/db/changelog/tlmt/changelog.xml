@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <include file="0004_tags.sql" relativeToChangelogFile="true"/>
+    <include file="0005-renaming.sql" relativeToChangelogFile="true"/>
+    <include file="0006_updates.sql" relativeToChangelogFile="true"/>
+    <include file="0010-create-view-statuschange.sql" relativeToChangelogFile="true"/>
+    <include file="0050_0005_functions.sql" relativeToChangelogFile="true"/>
+    <include file="0050_0007-views.sql" relativeToChangelogFile="true"/>
+    <include file="0050_0010_view-portfolio_changes.sql" relativeToChangelogFile="true"/>
+    <include file="0050_0020_view-portfolioitem_assessment_overview.sql" relativeToChangelogFile="true"/>
+    <include file="0050_0040_portfolioitem_qs.sql" relativeToChangelogFile="true"/>
+    <include file="0050_0050_dashboard_views.sql"   relativeToChangelogFile="true"/>
+    <include file="0060_item_link.sql" relativeToChangelogFile="true"/>
+    <include file="0070_portfolioitem_assessment.sql" relativeToChangelogFile="true"/>
+    <include file="0080_portfolio_version_update.sql" relativeToChangelogFile="true"/>
+    <include file="0090_portfolioitem_defaults.sql" relativeToChangelogFile="true"/>
+    <changeSet id="0200-queue.sql" author="rat">
+        <sqlFile path="0200-queue.sql" relativeToChangelogFile="true" splitStatements="false"/>
+    </changeSet>
+    <include file="0999_tlmt_user_rights.sql" relativeToChangelogFile="true"/>
+</databaseChangeLog>

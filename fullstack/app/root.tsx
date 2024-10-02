@@ -2,12 +2,11 @@ import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css"; //if using mantine date picker features
 import "mantine-react-table/styles.css"; //make sure MRT styles were imported in your app root (once)
 import "@mantine/notifications/styles.css";
-import {AppShell, Burger, ColorSchemeScript, Flex, List, MantineProvider,} from "@mantine/core";
+import {AppShell, Burger, ColorSchemeScript, Flex, List, MantineProvider, ScrollArea,} from "@mantine/core";
 import {useDisclosure} from "@mantine/hooks";
 import {Notifications} from "@mantine/notifications";
 import {json, type LoaderFunctionArgs, type MetaFunction,} from "@remix-run/node";
 import {
-	Link,
 	Links,
 	Meta,
 	Outlet,
@@ -20,10 +19,13 @@ import {useTranslation} from "react-i18next";
 import {useChangeLanguage} from "remix-i18next/react";
 import i18next from "~/i18next.server";
 import {theme} from "~/theme";
+import classes from "~/components/navbar/navbar-nested.module.css";
+import { IconAdjustments, IconCalendarStats, IconFileAnalytics, IconGauge, IconLock, IconNotes, IconPresentationAnalytics } from "@tabler/icons-react";
+import {LinksGroup} from '~/components/navbar/navbar-links-group';
 
 export const meta: MetaFunction = () => {
 	return [
-		{ title: "Chinook / Remix demo app" },
+		{ title: "Betreuung App" },
 		{
 			name: "description",
 			content: "A demo app to showcase remix and some other libraries",
@@ -47,6 +49,37 @@ export function Layout({ children }: { children: React.ReactNode }) {
 	// language, this locale will change and i18next will load the correct
 	// translation files
 	useChangeLanguage(locale);
+	const mockdata = [
+	  { label: 'Dashboard', icon: IconGauge, link: '/' },
+	  {
+	    label: 'Betreuungszeiten',
+	    icon: IconNotes,
+	    initiallyOpened: false,
+	    links: [
+	      { label: 'Kalender', link: '/' },
+	      { label: 'Wochen', link: '/' },
+	      { label: 'Tage', link: '/' },
+	      { label: 'Heute', link: '/betreuungszeiten/heute' },
+	    ],
+	  },
+	  {
+	    label: 'Admin',
+	    icon: IconCalendarStats,
+	    links: [
+	      { label: 'Benutzer', link: '/admin/benutzer/list' },
+	      { label: 'Schüler', link: '/schueler' },
+	    ],
+	  },
+	  {
+	    label: 'Benutzerkonto',
+	    icon: IconLock,
+	    links: [
+	      { label: 'Passwort ändern', link: '/' },
+	    ],
+	  },
+	];
+
+	const links = mockdata.map((item) => <LinksGroup {...item} key={item.label} />);
 
 	return (
 		<html lang={locale} dir={i18n.dir()}>
@@ -89,6 +122,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 						</AppShell.Header>
 
 						<AppShell.Navbar p={"md"}>
+      						<ScrollArea className={classes.links}>
+      						  <div className={classes.linksInner}>{links}</div>
+      						</ScrollArea>
 						</AppShell.Navbar>
 						<AppShell.Main>{children}</AppShell.Main>
 					</AppShell>

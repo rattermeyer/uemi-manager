@@ -2,29 +2,29 @@ import {Authenticator} from "remix-auth";
 import {commitSession, getSession, sessionStorage} from "./session.server";
 import {redirect} from "@remix-run/node";
 import {FormStrategy} from "remix-auth-form";
-import {getValidatedFormData} from "remix-hook-form";
-import {type User, userResolver} from "~/models/auth";
+import type {User} from "~/models/auth";
 import {kysely} from "~/db.server";
 import * as argon2 from "argon2";
-import {invariant} from '@remix-run/router/history';
 
 // define the user model
 
 export const authenticator = new Authenticator<User>(sessionStorage);
 
 authenticator.use(
-	new FormStrategy(async ({form }) => {
-		const email = form.get("email")?.toString() || "";
-		const password = form.get("password")?.toString() || "";
-		const hashedPassword = await argon2.hash(password);
+	new FormStrategy(async ({ form }) => {
+		const email = form.get("email")?.toString().replaceAll('"', '') || "";
+		const password = form.get("password")?.toString().replaceAll('"', '') || "";
 		const user = await kysely
 			.selectFrom("benutzer")
-			.select(["email", "passwort as password"])
+			.select(["email", "passwort_hash as password"])
 			.where((eb) =>
-				eb("email", "=", email).and("passwort", "=", hashedPassword),
-			)
-			.executeTakeFirst;
-		return {email, password, user};
+				eb("email", "=", email)
+			).executeTakeFirst();
+		const passwordVerification = await argon2.verify(user?.password || "", password);
+		if (!user || !passwordVerification) {
+			throw new Error("Invalid email or password");
+		}
+		return { email: user?.email || "", password: "" };
 	}),
 );
 

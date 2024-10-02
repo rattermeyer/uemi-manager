@@ -1,11 +1,9 @@
 // app/routes/login.tsx
-import {Anchor, Button, Checkbox, Container, Group, Paper, PasswordInput, TextInput, Title,} from "@mantine/core";
-import {type ActionFunction, json} from "@remix-run/node";
+import {Anchor, Button, Checkbox, Container, Group, Paper, PasswordInput, Text, TextInput, Title} from "@mantine/core";
+import type {ActionFunction} from "@remix-run/node";
 import classes from "~/css/Login.module.css";
-import {Form} from "@remix-run/react";
-import {getValidatedFormData, useRemixForm} from "remix-hook-form";
-import * as argon2 from "argon2";
-import {kysely} from '~/db.server';
+import {Form, useSearchParams} from "@remix-run/react";
+import {useRemixForm} from "remix-hook-form";
 import {type User, userResolver} from '~/models/auth';
 import {authenticator} from '~/services/auth.server';
 
@@ -17,11 +15,12 @@ export const loader = async () => {
 export const action: ActionFunction = async ({request, context}) => {
     return await authenticator.authenticate("form", request, {
         successRedirect: "/protected",
-        failureRedirect: "/login",
+        failureRedirect: "/login?loginFailed=true",
     });
 };
 
 export default function Login() {
+    const [searchParams] = useSearchParams();
     const {
         formState: {errors},
         handleSubmit,
@@ -37,6 +36,11 @@ export default function Login() {
 
             <Paper withBorder shadow="md" p={30} mt={30} radius="md">
                 {errors.root && <div>{errors.root.message}</div>}
+                {searchParams.get("loginFailed") && (
+                    <Text c="red" ta="center">
+                        Invalid email or password
+                    </Text>
+                )}
                 <Form method="post" onSubmit={handleSubmit}>
                     <TextInput
                         label="Email"

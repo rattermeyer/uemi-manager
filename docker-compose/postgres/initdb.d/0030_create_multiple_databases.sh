@@ -16,11 +16,13 @@ EOSQL
   psql -v ON_ERROR_STOP=1 --username postgres -d "$database" <<EOSQL
       CREATE SCHEMA ${database};
       CREATE SCHEMA IF NOT EXISTS extensions;
+      CREATE SCHEMA IF NOT EXISTS faker;
       ALTER USER ${database}_user SET search_path TO ${database},extensions;
       ALTER USER ${database}_admin SET search_path TO ${database},extensions;
       GRANT USAGE ON SCHEMA ${database} TO ${database}_user;
       GRANT ALL ON SCHEMA ${database} TO ${database}_admin;
       GRANT USAGE ON SCHEMA extensions TO ${database}_admin;
+      GRANT USAGE ON SCHEMA faker to ${database}_admin;
       ALTER USER ${database}_user SET search_path TO ${database},extensions;
 
       GRANT select,insert,update,delete ON ALL TABLES IN SCHEMA ${database} TO ${database}_user;

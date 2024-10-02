@@ -1,0 +1,194 @@
+openapi: 3.1.0
+info:
+  description: "API for interacting with the SuSy, e.g. making a proposal, getting\
+    \ a list of proposals and reviewed items, etc."
+  title: SuSy Business API
+  version: 0.8.0
+servers:
+- description: Development server
+  url: https://susy.tlmt.192.168.1.151.nip.io
+paths:
+  /item-review-processes:
+    post:
+      description: Propose a new item and start its review process.
+      operationId: proposeItem
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemProposal'
+        required: true
+      responses:
+        "204":
+          description: "OK, see Location header for the URL of the created item review\
+            \ process"
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "409":
+          $ref: '#/components/responses/Conflict'
+      tags:
+      - ItemReviewProcesses
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+      x-tags:
+      - tag: ItemReviewProcesses
+  /items:
+    get:
+      description: Get a list of all items that have been reviewed.
+      operationId: getItems
+      parameters:
+      - description: Filter items by type
+        explode: true
+        in: query
+        name: itemType
+        required: false
+        schema:
+          enum:
+          - LIFECYCLE_MANAGED
+          - LIFECYCLE_UNMANAGED
+          - NEW
+          - IGNORED
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Item'
+                type: array
+          description: Successful operation
+        "400":
+          $ref: '#/components/responses/BadRequest'
+        "404":
+          $ref: '#/components/responses/NotFound'
+      tags:
+      - Items
+      x-accepts:
+      - application/json
+      x-tags:
+      - tag: Items
+components:
+  responses:
+    BadRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Invalid input parameters
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The requested resource was not found
+    Conflict:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The request failed because it conflicts with existing data
+  schemas:
+    ItemProposal:
+      example:
+        emailNotification: max.mustermann@opitz-consulting.com
+        reason: |
+          DDD und Event Driven Integration werden immer wichtig.
+          Wir sollten ein Framework im Portfolio haben, mit dem wir DDD gut unterstützen können.
+        item:
+          name: Axon Framework
+          description: Eine Beschreibung des Items
+          uuid: 570c5538-154a-4d2b-9531-c7a858abd893
+        ignoreItem: false
+        modifiedBy: Max Mustermann (MMA)
+      properties:
+        item:
+          $ref: '#/components/schemas/ItemProposal_item'
+        reason:
+          description: Reason for the proposal
+          example: |
+            DDD und Event Driven Integration werden immer wichtig.
+            Wir sollten ein Framework im Portfolio haben, mit dem wir DDD gut unterstützen können.
+          maxLength: 1024
+          type: string
+        modifiedBy:
+          description: Who modified the process
+          example: Max Mustermann (MMA)
+          maxLength: 64
+          type: string
+        emailNotification:
+          example: max.mustermann@opitz-consulting.com
+          format: email
+          maxLength: 254
+          type: string
+        ignoreItem:
+          default: false
+          description: Signals if an item should be ignored instantly
+          type: boolean
+      required:
+      - modifiedBy
+      - reason
+    Item:
+      example:
+        itemType: LIFECYCLE_MANAGED
+        name: Axon Framework
+        description: Eine Beschreibung des Items
+        uuid: 570c5538-154a-4d2b-9531-c7a858abd893
+      properties:
+        uuid:
+          example: 570c5538-154a-4d2b-9531-c7a858abd893
+          format: uuid
+          type: string
+        name:
+          description: Name of Item
+          example: Axon Framework
+          maxLength: 64
+          type: string
+        description:
+          description: description of item
+          example: Eine Beschreibung des Items
+          maxLength: 1024
+          type: string
+        itemType:
+          enum:
+          - LIFECYCLE_MANAGED
+          - LIFECYCLE_UNMANAGED
+          - NEW
+          - IGNORED
+          type: string
+    Error:
+      properties:
+        code:
+          format: int32
+          type: integer
+        message:
+          maxLength: 255
+          type: string
+      required:
+      - code
+      - message
+    ItemProposal_item:
+      example:
+        name: Axon Framework
+        description: Eine Beschreibung des Items
+        uuid: 570c5538-154a-4d2b-9531-c7a858abd893
+      properties:
+        uuid:
+          example: 570c5538-154a-4d2b-9531-c7a858abd893
+          format: uuid
+          type: string
+        name:
+          description: Name of Item
+          example: Axon Framework
+          maxLength: 64
+          type: string
+        description:
+          description: description of item
+          example: Eine Beschreibung des Items
+          maxLength: 1024
+          type: string
+      required:
+      - description
+      - name
